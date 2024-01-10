@@ -36,7 +36,7 @@ osu£¡lazerÃ»ÓĞÏñ¡°ÎÈ¶¨¡±°æosu£¡ÄÇÑùµÄ¡°Songs/¡±ÎÄ¼ş¼Ğ¡£ LazerµÄÎÄ¼ş´æ´¢ÔÚÄúPCÉÏµ
 
 # ÏÂÔØ/Ê¹ÓÃ
 
-¿ÉÒÔ´ÓGitHubµÄ[Releases](https://github.com/kabiiQ/BeatmapExporter/releases)²¿·ÖÏÂÔØ¿ÉÖ´ĞĞÎÄ¼ş¡£
+¿ÉÒÔ´ÓGitHubµÄ[Releases](https://github.com/SeaAndStars/BeatmapExporter-CN-/releases)²¿·ÖÏÂÔØ¿ÉÖ´ĞĞÎÄ¼ş¡£
 
 Èç¹ûÄúÊ¹ÓÃµÄÊÇWindowsÏµÍ³£¬²¢ÇÒosu£¡Êı¾İ¿âÎ»ÓÚÄ¬ÈÏÎ»ÖÃ£¨%appdata%\osu£©£¬ÄúÓ¦¸Ã¿ÉÒÔÖ±½ÓÔËĞĞ¸ÃÓ¦ÓÃ³ÌĞò¡£Èç¹ûÄúÔÚ°²×°osu£¡lazerÊ±¸ü¸ÄÁËÊı¾İ¿âÎ»ÖÃ£¬Ôò¸Ã³ÌĞò½«ÎŞ·¨¶¨Î»Ëü£¬²¢½«ÌáÊ¾ÄúÊäÈëÎ»ÖÃ¡£
 
