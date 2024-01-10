@@ -1,49 +1,49 @@
-# BeatmapExporter (for osu!lazer)
+# BeatmapExporter（用于osu!lazer）
 
-### Support the Developer
+### 支持开发者
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/E1E5AF13X)
 
-For issues or if an update is required, you can create an issue on GitHub. Alternatively, I can be found through Discord via by [my bot's support server](https://discord.com/invite/ucVhtnh). Though it is not for BeatmapExporter specifically, I do not mind it being used for my other utilities such as this one.
+如有问题或需要更新，您可以在GitHub上创建问题。或者，您可以通过Discord找到我，通过[我的机器人的支持服务器](https://discord.com/invite/ucVhtnh)联系我。尽管它不是专门针对BeatmapExporter，但我不介意它被用于我的其他实用程序，比如这个。
 
-# Purpose/Functionality
+# 目的/功能
 
-BeatmapExporter is a command-line program/tool that can mass-export your osu! beatmap library from the modern osu!lazer storage format.
+BeatmapExporter是一个命令行程序/工具，可以从现代osu！lazer存储格式中批量导出您的osu！谱库。
 
-osu!lazer does not have a "Songs/" folder as "stable" osu! does. Lazer's files are stored under hashed filenames and other information about the beatmap is contained in a local "Realm" database on your PC.
+osu！lazer没有像“稳定”版osu！那样的“Songs/”文件夹。 Lazer的文件存储在您PC上的散列文件名下，有关谱面的其他信息包含在本地的“Realm”数据库中。
 
-## Beatmap Export
+## 谱面导出
 
-This new storage format results in a better experience while playing the game. However, a result of this system is that you can not easily export all or part of your songs library for sharing or moving back to osu! stable. 
+这种新的存储格式在玩游戏时带来了更好的体验。然而，这个系统的一个结果是，您不能轻松地导出您的所有或部分歌曲库以供共享或迁回osu！稳定版。
 
-This utility allows you to export beatmaps back into `.osz` files. 
+该实用程序允许您将谱面重新导出为`.osz`文件。
 
-There is a beatmap filter system allowing you to select a portion of your library to only export certain maps (for example, above a certain star rating, specific artists/mappers, specific gamemodes, specific collections, etc). You can also simply export your **entire library** at once.
+有一个谱面筛选系统，允许您选择库的一部分仅导出特定的谱面（例如，超过一定星级的，特定的艺术家/制图师，特定的游戏模式，特定的集合等）。您还可以一次导出**整个库**。
 
-You can also export directly into a .zip for more easily transferring your library.
+您还可以直接导出为.zip，更轻松地转移您的库。
 
-## Audio Export
+## 音频导出
 
-As of version 1.2, there is an option to export only audio files. Rather than entire beatmap archives, only .mp3 audio files will be exported. 
+从1.2版本开始，有一个选项只导出音频文件。与整个谱面存档不同，只会导出.mp3音频文件。
 
-The .mp3 files are tagged with basic artist/song information, and the background file from osu! is embedded where possible. 
+.mp3文件带有基本的艺术家/歌曲信息，并在可能的情况下嵌入了来自osu！的背景文件。
 
-If a beatmap uses a non-mp3 audio format, [FFmpeg](https://ffmpeg.org/download.html) is required to transcode into mp3. ffmpeg.exe (for Windows) can be placed on your system PATH or simply alongside BeatmapExporter.exe before launching BeatmapExporter.
+如果谱面使用的是非mp3音频格式，[FFmpeg](https://ffmpeg.org/download.html)将需要进行转码为mp3。在启动BeatmapExporter之前，可以将ffmpeg.exe（适用于Windows）放在系统PATH上，或者简单地放在BeatmapExporter.exe旁边。
 
-## Background Image Export
+## 背景图像导出
 
-As of version 1.3.8, there is an option to export only [beatmap background image files](https://github.com/kabiiQ/BeatmapExporter/pull/10).
+从1.3.8版本开始，有一个选项只导出[谱面背景图像文件](https://github.com/kabiiQ/BeatmapExporter/pull/10)。
 
-# Download/Usage
+# 下载/使用
 
-Executables are available from the [Releases](https://github.com/kabiiQ/BeatmapExporter/releases) section on GitHub. 
+可以从GitHub的[Releases](https://github.com/kabiiQ/BeatmapExporter/releases)部分下载可执行文件。
 
-If you are on a Windows system and your osu! database is in the default location (%appdata%\osu), you should be able to simply run the application. If you changed the database location when install osu!lazer, the program will be unable to locate it and will prompt you to enter it. 
+如果您使用的是Windows系统，并且osu！数据库位于默认位置（%appdata%\osu），您应该可以直接运行该应用程序。如果您在安装osu！lazer时更改了数据库位置，则该程序将无法定位它，并将提示您输入位置。
 
-If you are not on Windows, I included default directories for OSX and Linux and it should automatically work, but it is untested.
+如果您不在Windows上，我为OSX和Linux提供了默认目录，并且它应该自动工作，但没有经过测试。
 
-You can also launch the program with the database folder as the launch argument if you already know it will be in an unusual location. The database folder needed contains a "files" folder. This folder can also be opened from in-game if you moved it and are unsure where it is located. If you did not move it, it should just automatically work.
+您还可以将数据库文件夹作为启动参数启动程序，如果您已经知道它将位于不寻常的位置。所需的数据库文件夹包含一个“files”文件夹。如果您将其移动并不确定其位置，可以在游戏内打开此文件夹。如果没有移动它，它应该会自动工作。
 
-# Basic Export Task Screenshot (Exporting Beatmaps with a Tag)
+# 基本导出任务截图（使用标签导出谱面）
 
 ![](https://i.imgur.com/bbM1D5Z.png)
