@@ -55,7 +55,7 @@ namespace BeatmapExporter.Exporters.Lazer
             } 
             else
             {
-                Console.WriteLine("Collection filtering and information will not be available.");
+                Console.WriteLine("集合过滤和信息将不可用。");
                 collections = null;
             }
 
@@ -101,7 +101,7 @@ namespace BeatmapExporter.Exporters.Lazer
         IEnumerable<String> FilterInfo() => config.Filters.Select((f, i) =>
         {
             int includedCount = beatmapSets.SelectMany(set => set.Beatmaps).Count(b => f.Includes(b));
-            return $"{i + 1}. {f.Description} ({includedCount} beatmaps)";
+            return $"{i + 1}. {f.Description} ({includedCount} 谱面)";
         });
 
         public string FilterDetail() => string.Join("\n", FilterInfo());
@@ -130,7 +130,7 @@ namespace BeatmapExporter.Exporters.Lazer
 
             string exportDir = config.ExportPath;
             Directory.CreateDirectory(exportDir);
-            Console.WriteLine($"Selected {SelectedBeatmapSetCount} beatmap sets for export.");
+            Console.WriteLine($"已选择 {SelectedBeatmapSetCount} 谱面集进行导出。");
 
             BeatmapExporter.OpenExportDirectory(exportDir);
 
@@ -141,7 +141,7 @@ namespace BeatmapExporter.Exporters.Lazer
             {
                 attempted++;
                 string filename = mapset.ArchiveFilename();
-                Console.WriteLine($"Exporting beatmap set ({attempted}/{SelectedBeatmapSetCount}): {filename}");
+                Console.WriteLine($"无法导出 ({attempted}/{SelectedBeatmapSetCount}): {filename}");
 
                 Stream? export = null;
                 try
@@ -165,7 +165,7 @@ namespace BeatmapExporter.Exporters.Lazer
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Unable to export {filename} :: {e.Message}");
+                    Console.WriteLine($"不能导出 {filename} :: {e.Message}");
                 }
                 finally
                 {
@@ -471,3 +471,4 @@ namespace BeatmapExporter.Exporters.Lazer
         }
     }
 }
+
