@@ -14,9 +14,9 @@ namespace BeatmapExporter.Exporters.Lazer
         readonly List<BeatmapSet> beatmapSets;
         readonly int beatmapCount;
 
-        int selectedBeatmapCount; // internally maintained count of selected beatmaps
+        int selectedBeatmapCount; // 内部维护的已选择谱面数量
         List<BeatmapSet> selectedBeatmapSets;
-            
+
         readonly Transcoder transcoder;
 
         readonly Dictionary<string, MapCollection>? collections;
@@ -40,7 +40,7 @@ namespace BeatmapExporter.Exporters.Lazer
 
             this.config = new ExporterConfiguration("lazerexport");
 
-            if(lazerCollections != null)
+            if (lazerCollections != null)
             {
                 collections = new();
                 var colIndex = 1;
@@ -52,7 +52,7 @@ namespace BeatmapExporter.Exporters.Lazer
                     collections[coll.Name] = new MapCollection(colIndex, colMaps);
                     colIndex++;
                 }
-            } 
+            }
             else
             {
                 Console.WriteLine("集合过滤和信息将不可用。");
@@ -61,7 +61,6 @@ namespace BeatmapExporter.Exporters.Lazer
 
             this.transcoder = new Transcoder();
         }
-
 
         public int BeatmapSetCount
         {
@@ -108,7 +107,7 @@ namespace BeatmapExporter.Exporters.Lazer
 
         public void DisplaySelectedBeatmaps()
         {
-            // display ALL currently selected beatmaps
+            // 显示当前已选择的所有谱面
             foreach (var map in selectedBeatmapSets)
             {
                 Console.WriteLine(map.Display());
@@ -117,14 +116,14 @@ namespace BeatmapExporter.Exporters.Lazer
 
         public void ExportBeatmaps()
         {
-            // perform export operation for currently selected beatmaps 
-            // produce set of excluded file hashes of difficulty files that should be skipped
-            // these are difficulties in original beatmap but not 'selected'
-            // when doing file export, we do not want to care about what difficulty file, audio file, etc we are exporting 
+            // 对当前已选择的谱面执行导出操作
+            // 生成应跳过的难度文件的排除文件哈希集合
+            // 这些是原始谱面中的难度，但不是'已选择'的难度
+            // 在进行文件导出时，我们不关心导出的是哪个难度文件、音频文件等
             var excludedHashes =
-                from set in selectedBeatmapSets // get all sets that contain at least one selected difficulty
-                from map in set.Beatmaps // get each difficulty (regardless of filtering) from those sets
-                where !set.SelectedBeatmaps.Contains(map) // get difficulties that will be filtered for export
+                from set in selectedBeatmapSets // 获取至少包含一个已选择难度的所有谱面集
+                from map in set.Beatmaps // 获取来自这些谱面集的每个难度（不考虑过滤）
+                where !set.SelectedBeatmaps.Contains(map) // 获取将被过滤导出的难度
                 select map.Hash;
             var excluded = excludedHashes.ToList();
 
@@ -134,7 +133,7 @@ namespace BeatmapExporter.Exporters.Lazer
 
             BeatmapExporter.OpenExportDirectory(exportDir);
 
-            // export all named files, excluding filtered difficulties into .osz archive
+            // 将所有命名文件导出到 .osz 压缩文件，排除过滤的难度
             int attempted = 0;
             int exported = 0;
             foreach (var mapset in selectedBeatmapSets)
@@ -157,7 +156,7 @@ namespace BeatmapExporter.Exporters.Lazer
                             continue;
                         var entry = osz.CreateEntry(namedFile.Filename, config.CompressionLevel);
                         using var entryStream = entry.Open();
-                        // open the actual difficulty/audio/image file from the lazer file store
+                        // 从 lazer 文件存储中打开实际的难度/音频/图像文件
                         using var file = lazerDb.OpenHashedFile(hash);
                         file?.CopyTo(entryStream);
                     }
@@ -174,20 +173,20 @@ namespace BeatmapExporter.Exporters.Lazer
             }
 
             string location = Path.GetFullPath(exportDir);
-            Console.WriteLine($"Exported {exported}/{SelectedBeatmapSetCount} beatmaps to {location}.");
+            Console.WriteLine($"已从 {location} 导出 {exported}/{SelectedBeatmapSetCount} 谱面。");
         }
 
         public void ExportAudioFiles()
         {
-            // perform export of songs as .mp3 files
+            // 执行将歌曲导出为 .mp3 文件的操作
             string exportDir = config.ExportPath;
             Directory.CreateDirectory(exportDir);
 
-            Console.WriteLine($"Exporting audio from {selectedBeatmapSets.Count} beatmap sets to as .mp3 files.");
+            Console.WriteLine($"正在将 {selectedBeatmapSets.Count} 谱面集中的音频导出为 .mp3 文件。");
             if (transcoder.Available)
-                Console.WriteLine("This operation will take longer if many selected beatmaps are not in .mp3 format.");
+                Console.WriteLine("如果许多已选择的谱面不是 .mp3 格式，此操作将花费更长时间。");
             else
-                Console.WriteLine("FFmpeg runtime not found. Beatmaps that use other audio formats than .mp3 will be skipped.\nMake sure ffmpeg.exe is located on the system PATH or placed in the directory with this BeatmapExporter.exe to enable transcoding.");
+                Console.WriteLine("未找到 FFmpeg 运行时。将跳过使用其他音频格式而不是 .mp3 的谱面。\n确保 ffmpeg.exe 位于系统 PATH 中或放置在此 BeatmapExporter.exe 目录中以启用转码。");
 
             BeatmapExporter.OpenExportDirectory(exportDir);
 
@@ -195,8 +194,8 @@ namespace BeatmapExporter.Exporters.Lazer
             int attempted = 0;
             foreach (var mapset in selectedBeatmapSets)
             {
-                // get any beatmap diffs from this set with different audio files
-                // typically 1 'audio.mp3' only by convention. could also be multiple across different difficulties
+                // 从此集合中获取具有不同音频文件的任何谱面难度
+                // 通常只有一个 'audio.mp3' 由约定命名。也可能跨不同难度有多个
                 var uniqueMetadata = mapset
                     .SelectedBeatmaps
                     .Select(b => b.Metadata)
@@ -208,17 +207,17 @@ namespace BeatmapExporter.Exporters.Lazer
                 {
                     try
                     {
-                        // transcode if audio is not in .mp3 format
+                        // 如果音频不是 .mp3 格式，则进行转码
                         string extension = Path.GetExtension(metadata.AudioFile);
                         bool transcode = extension.ToLower() != ".mp3";
-                        string transcodeNotice = transcode ? $" (transcode required from {extension})" : "";
+                        string transcodeNotice = transcode ? $"（需要从 {extension} 转码）" : "";
 
-                        // produce more meaningful filename than 'audio.mp3' 
+                        // 生成比 'audio.mp3' 更有意义的文件名
                         string outputFilename = metadata.OutputAudioFilename(mapset.OnlineID);
                         string outputFile = Path.Combine(exportDir, outputFilename);
 
                         attempted++;
-                        Console.WriteLine($"({attempted}/?) Exporting {outputFilename}{transcodeNotice}");
+                        Console.WriteLine($"({attempted}/?) 导出 {outputFilename}{transcodeNotice}");
 
                         using FileStream? audio = lazerDb.OpenNamedFile(mapset, metadata.AudioFile);
                         if (audio is null)
@@ -226,10 +225,10 @@ namespace BeatmapExporter.Exporters.Lazer
 
                         if (transcode)
                         {
-                            // transcoder (FFmpeg) not available, skipping. 
+                            // 转码器（FFmpeg）不可用，跳过。
                             if (!transcoder.Available)
                             {
-                                Console.WriteLine($"Beatmap has non-mp3 audio: {metadata.AudioFile}. FFmpeg not loaded, skipping.");
+                                Console.WriteLine($"谱面具有非 mp3 音频：{metadata.AudioFile}。FFmpeg 未加载，跳过。");
                                 continue;
                             }
                             try
@@ -238,7 +237,7 @@ namespace BeatmapExporter.Exporters.Lazer
                             }
                             catch (Exception e)
                             {
-                                Console.WriteLine($"Unable to transcode audio: {metadata.AudioFile}. An error occured :: {e.Message}");
+                                Console.WriteLine($"无法转码音频：{metadata.AudioFile}。发生错误 :: {e.Message}");
                                 continue;
                             }
                         }
@@ -248,7 +247,7 @@ namespace BeatmapExporter.Exporters.Lazer
                             audio.CopyTo(output);
                         }
 
-                        // set mp3 tags 
+                        // 设置 mp3 标签
                         try
                         {
                             var mp3 = TagLib.File.Create(outputFile);
@@ -260,7 +259,7 @@ namespace BeatmapExporter.Exporters.Lazer
                                 mp3.Tag.Description = metadata.Tags;
                             mp3.Tag.Comment = $"{mapset.OnlineID} {metadata.Tags}";
 
-                            // set beatmap background as album cover 
+                            // 将谱面背景设置为专辑封面
                             if (mp3.Tag.Pictures.Count() == 0 && metadata.BackgroundFile is not null)
                             {
                                 using FileStream? bg = lazerDb.OpenNamedFile(mapset, metadata.BackgroundFile);
@@ -285,19 +284,19 @@ namespace BeatmapExporter.Exporters.Lazer
                         }
                         catch (Exception e)
                         {
-                            Console.WriteLine($"Unable to set metadata for {outputFilename} :: {e.Message}\nExporting will continue.");
+                            Console.WriteLine($"无法为 {outputFilename} 设置元数据 :: {e.Message}\n导出将继续。");
                         }
                         exportedAudioFiles++;
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine($"Unable to export beatmap :: {e.Message}");
+                        Console.WriteLine($"无法导出谱面 :: {e.Message}");
                     }
                 }
             }
 
             string location = Path.GetFullPath(exportDir);
-            Console.WriteLine($"Exported {exportedAudioFiles}/{attempted} audio files from {SelectedBeatmapCount} beatmaps to {location}.");
+            Console.WriteLine($"已从 {location} 导出 {exportedAudioFiles}/{attempted} 音频文件，从 {SelectedBeatmapCount} 谱面。");
         }
 
         public void ExportBackgroundFiles()
@@ -305,14 +304,14 @@ namespace BeatmapExporter.Exporters.Lazer
             // perform export of beatmap backgrounds
             string exportDir = config.ExportPath;
             Directory.CreateDirectory(exportDir);
-            
+
             BeatmapExporter.OpenExportDirectory(exportDir);
 
             int exportedBackgroundFiles = 0;
             int attempted = 0;
             foreach (var mapset in selectedBeatmapSets)
             {
-                // get beatmap diffs from this set with different background image filenames
+                // 从此集合中获取具有不同背景图像文件名的谱面难度
                 var uniqueMetadata = mapset
                     .SelectedBeatmaps
                     .Select(b => b.Metadata)
@@ -325,47 +324,47 @@ namespace BeatmapExporter.Exporters.Lazer
                 {
                     try
                     {
-                        // get output filename for background including original background name
+                        // 获取包含原始背景名称的背景的输出文件名
                         string outputFilename = metadata.OutputBackgroundFilename(mapset.OnlineID);
                         string outputFile = Path.Combine(exportDir, outputFilename);
 
                         attempted++;
-                        Console.WriteLine($"({attempted}/?) Exporting {outputFilename}");
+                        Console.WriteLine($"({attempted}/?) 导出 {outputFilename}");
 
                         using FileStream? background = lazerDb.OpenNamedFile(mapset, metadata.BackgroundFile);
                         if (background is null)
                             continue;
-                        
+
                         using FileStream output = File.Open(outputFile, FileMode.CreateNew);
                         background.CopyTo(output);
-                        
+
                         exportedBackgroundFiles++;
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine($"Unable to export background image :: {e.Message}");
+                        Console.WriteLine($"无法导出背景图像 :: {e.Message}");
                     }
                 }
             }
 
             string location = Path.GetFullPath(exportDir);
-            Console.WriteLine($"Exported {exportedBackgroundFiles}/{attempted} background files from {SelectedBeatmapCount} beatmaps to {location}.");
+            Console.WriteLine($"已从 {location} 导出 {exportedBackgroundFiles}/{attempted} 背景文件，从 {SelectedBeatmapCount} 谱面。");
         }
         public void DisplayCollections()
         {
-        if (collections is not null)
+            if (collections is not null)
             {
-                Console.Write("osu! collections:\n\n");
+                Console.Write("osu! 集合:\n\n");
                 foreach (var (name, (index, maps)) in collections)
                 {
-                    Console.WriteLine($"#{index}: {name} ({maps.Count} beatmaps)");
+                    Console.WriteLine($"#{index}: {name} ({maps.Count} 谱面)");
                 }
-            } 
+            }
             else
             {
-                Console.WriteLine("Your osu!lazer collection database was not able to be loaded. Collection information and filtering is not available.");
+                Console.WriteLine("无法加载 osu!lazer 集合数据库。集合信息和过滤不可用。");
             }
-            Console.Write("\nThe collection names as shown here can be used with the \"collection\" beatmap filter.\n");
+            Console.Write("\n这里显示的集合名称可用于\"collection\" 谱面过滤。\n");
         }
 
         private readonly Regex idCollection = new("#([0-9]+)", RegexOptions.Compiled);
@@ -376,7 +375,7 @@ namespace BeatmapExporter.Exporters.Lazer
             bool negateColl = false;
             foreach (var filter in config.Filters)
             {
-                // Validate collection filter requests
+                // 验证集合过滤请求
                 if (filter.Collections is not null)
                 {
                     if (collections is not null)
@@ -388,7 +387,7 @@ namespace BeatmapExporter.Exporters.Lazer
                             var match = idCollection.Match(requestedFilter);
                             if (match.Success)
                             {
-                                // Find any collection filters that are requested by index
+                                // 查找通过索引请求的任何集合过滤器
                                 var collectionId = int.Parse(match.Groups[1].Value);
                                 targetCollection = collections.FirstOrDefault(c => c.Value.CollectionID == collectionId).Key;
                             }
@@ -400,13 +399,13 @@ namespace BeatmapExporter.Exporters.Lazer
                                     targetCollection = requestedFilter;
                                 }
                             }
-                            if(targetCollection != null)
+                            if (targetCollection != null)
                             {
                                 filteredCollections.Add(targetCollection);
                             }
                             else
                             {
-                                Console.WriteLine($"Unable to find collection: {requestedFilter}.");
+                                Console.WriteLine($"无法找到集合：{requestedFilter}。");
                             }
                         }
                         collFilters.AddRange(filteredCollections);
@@ -414,17 +413,17 @@ namespace BeatmapExporter.Exporters.Lazer
                     }
                     else
                     {
-                        Console.WriteLine("Unable to filter collections, collections were not available on startup!");
+                        Console.WriteLine("无法过滤集合，集合在启动时不可用！");
                     }
                 }
-                else // this filter is not a collection filter
+                else // 此过滤器不是集合过滤器
                     beatmapFilters.Add(filter);
             }
 
-            // re-build 'collection' filters to optimize/cache iteration of beatmaps/collections for these
+            // 重新构建 'collection' 过滤器以优化/缓存这些 beatmaps/collections 的迭代
             if (collections is not null && collFilters.Count > 0)
             {
-                // build list of beatmap ids from selected filters
+                // 从选择的过滤器中构建包含的 beatmap ids 列表
                 var includedHashes = collections
                     .Where(c => collFilters.Any(c => c == "-all") switch
                     {
@@ -435,17 +434,17 @@ namespace BeatmapExporter.Exporters.Lazer
                     .ToList();
 
                 string desc = string.Join(", ", collFilters);
-                BeatmapFilter collFilter = new($"Collection filter: {(negateColl ? "NOT in " : "")}{desc}", negateColl,
+                BeatmapFilter collFilter = new($"集合过滤器: {(negateColl ? "不在 " : "")}{desc}", negateColl,
                     b => includedHashes.Contains(b.ID));
 
-                // with placeholder collection filters removed, add re-built filter 
+                // 删除占位符集合过滤器后，添加重新构建的过滤器
                 beatmapFilters.Add(collFilter);
             }
 
-            // collection filter will either be rebuilt above or removed (if collections are not available)
+            // 集合过滤器将在上述被重新构建或删除（如果集合不可用的话）
             config.Filters = beatmapFilters;
 
-            // compute and cache 'selected' beatmaps based on current filters
+            // 根据当前过滤器计算和缓存 '已选择' 的 beatmaps
             int selectedCount = 0;
             List<BeatmapSet> selectedSets = new();
             foreach (var set in beatmapSets)
@@ -459,7 +458,7 @@ namespace BeatmapExporter.Exporters.Lazer
                 set.SelectedBeatmaps = selected;
                 selectedCount += selected.Count;
 
-                // after filtering beatmaps, "selected beatmap sets" will only include sets that STILL have at least 1 beatmap 
+                // 在过滤谱面后，“已选择的谱面集”将只包含仍然至少有 1 个谱面的集合
                 if (selected.Count > 0)
                 {
                     selectedSets.Add(set);
