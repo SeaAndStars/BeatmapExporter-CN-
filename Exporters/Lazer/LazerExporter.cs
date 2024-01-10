@@ -353,7 +353,7 @@ namespace BeatmapExporter.Exporters.Lazer
         }
         public void DisplayCollections()
         {
-            if(collections is not null)
+        if (collections is not null)
             {
                 Console.Write("osu! collections:\n\n");
                 foreach (var (name, (index, maps)) in collections)
