@@ -31,8 +31,10 @@ namespace BeatmapExporter.Exporters
                 {
                     Format.Beatmap => basePath,
                     Format.Audio => Path.Combine(basePath, "mp3"),
-                    Format.Background => Path.Combine(basePath, "bg")
+                    Format.Background => Path.Combine(basePath, "bg"),
+                    _ => throw new NotSupportedException($"Unsupported export format: {ExportFormat}")
                 };
+
             }
             set => exportPath = value;
         }
